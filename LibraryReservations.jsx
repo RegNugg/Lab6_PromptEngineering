@@ -1,0 +1,390 @@
+import { useState, useEffect } from "react";
+
+const BOOKS = [
+  { id: 1, title: "The Name of the Wind", author: "Patrick Rothfuss", genre: "Fantasy", cover: "https://covers.openlibrary.org/b/id/8236862-M.jpg", available: true },
+  { id: 2, title: "Dune", author: "Frank Herbert", genre: "Sci-Fi", cover: "https://covers.openlibrary.org/b/id/8231856-M.jpg", available: true },
+  { id: 3, title: "1984", author: "George Orwell", genre: "Dystopia", cover: "https://covers.openlibrary.org/b/id/7222246-M.jpg", available: false },
+  { id: 4, title: "The Hitchhiker's Guide", author: "Douglas Adams", genre: "Sci-Fi", cover: "https://covers.openlibrary.org/b/id/8405716-M.jpg", available: true },
+  { id: 5, title: "Sapiens", author: "Yuval Noah Harari", genre: "History", cover: "https://covers.openlibrary.org/b/id/8739161-M.jpg", available: true },
+  { id: 6, title: "The Great Gatsby", author: "F. Scott Fitzgerald", genre: "Classic", cover: "https://covers.openlibrary.org/b/id/8432047-M.jpg", available: true },
+];
+
+const GENRES = ["All", ...Array.from(new Set(BOOKS.map(b => b.genre)))];
+
+function Toast({ message, type, onClose }) {
+  useEffect(() => {
+    const t = setTimeout(onClose, 3200);
+    return () => clearTimeout(t);
+  }, [onClose]);
+  return (
+    <div style={{
+      position: "fixed", bottom: 28, right: 28, zIndex: 999,
+      background: type === "success" ? "#0f6e56" : type === "warning" ? "#ba7517" : "#a32d2d",
+      color: "#fff", padding: "12px 20px", borderRadius: 10, fontSize: 14,
+      fontFamily: "'DM Sans', sans-serif", fontWeight: 500, maxWidth: 320,
+      boxShadow: "0 4px 24px rgba(0,0,0,0.18)", display: "flex", gap: 10, alignItems: "center",
+      animation: "slideUp 0.25s ease"
+    }}>
+      <span>{type === "success" ? "✓" : type === "warning" ? "↩" : "✕"}</span>
+      <span>{message}</span>
+      <button onClick={onClose} style={{ marginLeft: "auto", background: "none", border: "none", color: "#fff", cursor: "pointer", fontSize: 16, lineHeight: 1 }}>×</button>
+    </div>
+  );
+}
+
+function BookCard({ book, onReserve, onUndo, reservations }) {
+  const reservation = reservations.find(r => r.bookId === book.id && r.active);
+  const isReserved = !!reservation;
+  const isAvailable = book.available && !isReserved;
+
+  return (
+    <div style={{
+      background: "#fff", borderRadius: 14, overflow: "hidden",
+      border: "1px solid #e8e4dc", transition: "transform 0.18s, box-shadow 0.18s",
+      display: "flex", flexDirection: "column",
+    }}
+      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 8px 28px rgba(0,0,0,0.1)"; }}
+      onMouseLeave={e => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = ""; }}
+    >
+      <div style={{ position: "relative", height: 180, background: "#f5f1eb", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+        <img src={book.cover} alt={book.title} style={{ height: "100%", objectFit: "cover", width: "100%" }}
+          onError={e => { e.target.style.display = "none"; }} />
+        <div style={{
+          position: "absolute", top: 10, right: 10,
+          background: isReserved ? "#ba7517" : isAvailable ? "#0f6e56" : "#a32d2d",
+          color: "#fff", borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 600,
+          fontFamily: "'DM Sans', sans-serif", letterSpacing: "0.04em"
+        }}>
+          {isReserved ? "Reserved" : isAvailable ? "Available" : "Unavailable"}
+        </div>
+      </div>
+      <div style={{ padding: "14px 16px 16px", flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
+        <span style={{ fontSize: 11, color: "#888", fontFamily: "'DM Sans', sans-serif", letterSpacing: "0.05em", textTransform: "uppercase" }}>{book.genre}</span>
+        <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, fontFamily: "'DM Serif Display', Georgia, serif", color: "#1a1410", lineHeight: 1.3 }}>{book.title}</h3>
+        <p style={{ margin: 0, fontSize: 13, color: "#666", fontFamily: "'DM Sans', sans-serif" }}>{book.author}</p>
+        <div style={{ marginTop: "auto", paddingTop: 12, display: "flex", gap: 8 }}>
+          {isReserved ? (
+            <button onClick={() => onUndo(reservation.id)} style={{
+              flex: 1, padding: "8px 0", borderRadius: 8, border: "1.5px solid #ba7517",
+              background: "none", color: "#ba7517", fontFamily: "'DM Sans', sans-serif",
+              fontWeight: 600, fontSize: 13, cursor: "pointer", transition: "background 0.15s"
+            }}
+              onMouseEnter={e => e.target.style.background = "#faeeda"}
+              onMouseLeave={e => e.target.style.background = "none"}
+            >
+              Cancel Reservation
+            </button>
+          ) : (
+            <button onClick={() => onReserve(book)} disabled={!isAvailable} style={{
+              flex: 1, padding: "8px 0", borderRadius: 8, border: "none",
+              background: isAvailable ? "#2d1f0e" : "#e0dbd4", color: isAvailable ? "#fff" : "#aaa",
+              fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: 13,
+              cursor: isAvailable ? "pointer" : "not-allowed", transition: "background 0.15s"
+            }}
+              onMouseEnter={e => { if (isAvailable) e.target.style.background = "#4a3420"; }}
+              onMouseLeave={e => { if (isAvailable) e.target.style.background = "#2d1f0e"; }}
+            >
+              Reserve
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  const [user, setUser] = useState(null);
+  const [isLoginMode, setIsLoginMode] = useState(false);
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [books, setBooks] = useState(BOOKS);
+  const [reservations, setReservations] = useState([]);
+  const [toast, setToast] = useState(null);
+  const [genre, setGenre] = useState("All");
+  const [search, setSearch] = useState("");
+  const [view, setView] = useState("catalog"); // catalog | my-reservations
+  const [showRegModal, setShowRegModal] = useState(false);
+
+  const showToast = (message, type = "success") => setToast({ message, type });
+  // Load persisted data on mount
+  useEffect(() => {
+    try {
+      const savedUsers = JSON.parse(localStorage.getItem('biblio_users') || '[]');
+      const savedCurrent = JSON.parse(localStorage.getItem('biblio_currentUser') || 'null');
+      const savedReservations = JSON.parse(localStorage.getItem('biblio_reservations') || '[]');
+      if (savedReservations && Array.isArray(savedReservations)) setReservations(savedReservations);
+      if (savedCurrent) setUser(savedCurrent);
+    } catch (err) {
+      console.warn('Failed to read localStorage:', err);
+    }
+  }, []);
+
+  // Persist current user
+  useEffect(() => {
+    try {
+      if (user) localStorage.setItem('biblio_currentUser', JSON.stringify(user));
+      else localStorage.removeItem('biblio_currentUser');
+    } catch (err) { console.warn(err); }
+  }, [user]);
+
+  // Persist reservations
+  useEffect(() => {
+    try { localStorage.setItem('biblio_reservations', JSON.stringify(reservations || [])); }
+    catch (err) { console.warn(err); }
+  }, [reservations]);
+
+  const handleRegister = (e) => {
+    e && e.preventDefault();
+    if (!email) return;
+    try {
+      const stored = JSON.parse(localStorage.getItem('biblio_users') || '[]');
+      if (isLoginMode) {
+        const found = stored.find(u => u.email === email.toLowerCase());
+        if (found) {
+          setUser(found);
+          try { localStorage.setItem('biblio_currentUser', JSON.stringify(found)); } catch (err) {}
+          setShowRegModal(false);
+          showToast(`Welcome back, ${found.name || found.email}!`, 'success');
+        } else {
+          showToast('No account found. Please register.', 'warning');
+        }
+        return;
+      }
+
+      if (!name) return;
+      const normEmail = email.toLowerCase();
+      const exists = stored.find(u => u.email === normEmail);
+      const newUser = exists ? exists : { email: normEmail, name };
+      if (!exists) stored.push(newUser);
+      localStorage.setItem('biblio_users', JSON.stringify(stored));
+      setUser(newUser);
+      try { localStorage.setItem('biblio_currentUser', JSON.stringify(newUser)); } catch (err) {}
+      setShowRegModal(false);
+      showToast(`Welcome, ${name}! You're now registered.`, 'success');
+    } catch (err) {
+      console.warn('Failed to persist user:', err);
+    }
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    try { localStorage.removeItem('biblio_currentUser'); } catch (err) { }
+    showToast('Logged out successfully.', 'success');
+  };
+
+  const handleReserve = (book) => {
+    if (!user) { setShowRegModal(true); return; }
+    const id = Date.now();
+    setReservations(prev => {
+      const next = [...prev, { id, bookId: book.id, bookTitle: book.title, date: new Date().toLocaleDateString(), active: true }];
+      try { localStorage.setItem('biblio_reservations', JSON.stringify(next)); } catch (err) {}
+      return next;
+    });
+    showToast(`"${book.title}" reserved successfully!`, "success");
+  };
+
+  const handleUndo = (reservationId) => {
+    const res = reservations.find(r => r.id === reservationId);
+    setReservations(prev => {
+      const next = prev.map(r => r.id === reservationId ? { ...r, active: false } : r);
+      try { localStorage.setItem('biblio_reservations', JSON.stringify(next)); } catch (err) {}
+      return next;
+    });
+    showToast(`Reservation for "${res?.bookTitle}" cancelled.`, "warning");
+  };
+
+  const filtered = books.filter(b => {
+    const matchGenre = genre === "All" || b.genre === genre;
+    const matchSearch = b.title.toLowerCase().includes(search.toLowerCase()) || b.author.toLowerCase().includes(search.toLowerCase());
+    return matchGenre && matchSearch;
+  });
+
+  const activeReservations = reservations.filter(r => r.active);
+
+  return (
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap');
+        * { box-sizing: border-box; }
+        body { margin: 0; background: #f7f3ec; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        input:focus, button:focus { outline: 2px solid #ba7517; outline-offset: 2px; }
+      `}</style>
+
+      {/* HEADER */}
+      <header style={{ background: "#2d1f0e", color: "#f7f3ec", padding: "0 32px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64, position: "sticky", top: 0, zIndex: 100 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <span style={{ fontSize: 22, fontFamily: "'DM Serif Display', serif", letterSpacing: "-0.01em" }}>📚 BiblioReserve</span>
+        </div>
+        <nav style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <button onClick={() => setView("catalog")} style={{
+            background: view === "catalog" ? "#ba7517" : "none", border: "none",
+            color: "#f7f3ec", padding: "6px 14px", borderRadius: 8, cursor: "pointer",
+            fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 14
+          }}>Catalog</button>
+          <button onClick={() => setView("my-reservations")} style={{
+            background: view === "my-reservations" ? "#ba7517" : "none", border: "none",
+            color: "#f7f3ec", padding: "6px 14px", borderRadius: 8, cursor: "pointer",
+            fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 14, position: "relative"
+          }}>
+            My Reservations
+            {activeReservations.length > 0 && (
+              <span style={{ position: "absolute", top: 2, right: 2, background: "#ef9f27", color: "#fff", borderRadius: "50%", width: 16, height: 16, fontSize: 10, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>
+                {activeReservations.length}
+              </span>
+            )}
+          </button>
+          {user ? (
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <span style={{ marginLeft: 8, fontSize: 13, color: "#c4a882", fontFamily: "'DM Sans', sans-serif" }}>
+                👤 {user.name}
+              </span>
+              <button onClick={handleLogout} style={{ marginLeft: 4, background: 'transparent', border: '1px solid #c4a882', color: '#c4a882', padding: '6px 10px', borderRadius: 8, cursor: 'pointer', fontFamily: "'DM Sans', sans-serif", fontSize: 13 }}>Log out</button>
+            </div>
+          ) : (
+            <button onClick={() => { setShowRegModal(true); setIsLoginMode(false); }} style={{
+              marginLeft: 8, background: "#ba7517", border: "none", color: "#fff",
+              padding: "6px 16px", borderRadius: 8, cursor: "pointer",
+              fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: 14
+            }}>Sign Up / Log In</button>
+          )}
+        </nav>
+      </header>
+
+      {/* MAIN */}
+      <main style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 24px" }}>
+
+        {view === "catalog" && (
+          <>
+            <div style={{ marginBottom: 28 }}>
+              <h1 style={{ margin: "0 0 6px", fontFamily: "'DM Serif Display', serif", fontSize: 34, color: "#1a1410" }}>Library Catalog</h1>
+              <p style={{ margin: 0, color: "#777", fontFamily: "'DM Sans', sans-serif", fontSize: 15 }}>Browse and reserve books from our collection</p>
+            </div>
+
+            {/* Filters */}
+            <div style={{ display: "flex", gap: 12, marginBottom: 28, flexWrap: "wrap" }}>
+              <input
+                type="text" placeholder="Search books or authors…"
+                value={search} onChange={e => setSearch(e.target.value)}
+                style={{ flex: "1 1 240px", padding: "9px 14px", borderRadius: 8, border: "1px solid #ddd", fontSize: 14, fontFamily: "'DM Sans', sans-serif", background: "#fff" }}
+              />
+              <select value={genre} onChange={e => setGenre(e.target.value)} style={{
+                padding: "9px 14px", borderRadius: 8, border: "1px solid #ddd", fontSize: 14,
+                fontFamily: "'DM Sans', sans-serif", background: "#fff", cursor: "pointer"
+              }}>
+                {GENRES.map(g => <option key={g}>{g}</option>)}
+              </select>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 20 }}>
+              {filtered.map(book => (
+                <BookCard key={book.id} book={book} onReserve={handleReserve} onUndo={handleUndo} reservations={reservations} />
+              ))}
+              {filtered.length === 0 && (
+                <p style={{ color: "#aaa", fontFamily: "'DM Sans', sans-serif", gridColumn: "1/-1", textAlign: "center", marginTop: 40 }}>No books found.</p>
+              )}
+            </div>
+          </>
+        )}
+
+        {view === "my-reservations" && (
+          <>
+            <div style={{ marginBottom: 28 }}>
+              <h1 style={{ margin: "0 0 6px", fontFamily: "'DM Serif Display', serif", fontSize: 34, color: "#1a1410" }}>My Reservations</h1>
+              <p style={{ margin: 0, color: "#777", fontFamily: "'DM Sans', sans-serif", fontSize: 15 }}>
+                {user ? `Logged in as ${user.email}` : "Please sign up to see your reservations"}
+              </p>
+            </div>
+
+            {!user && (
+              <div style={{ textAlign: "center", padding: "48px 0" }}>
+                <p style={{ fontFamily: "'DM Sans', sans-serif", color: "#888", marginBottom: 16 }}>You need to be registered to manage reservations.</p>
+                <button onClick={() => setShowRegModal(true)} style={{ background: "#2d1f0e", color: "#fff", border: "none", padding: "10px 24px", borderRadius: 8, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: 14 }}>
+                  Sign Up
+                </button>
+              </div>
+            )}
+
+            {user && activeReservations.length === 0 && (
+              <div style={{ textAlign: "center", padding: "48px 0" }}>
+                <p style={{ fontFamily: "'DM Sans', sans-serif", color: "#888", marginBottom: 16 }}>No active reservations. Go browse the catalog!</p>
+                <button onClick={() => setView("catalog")} style={{ background: "#2d1f0e", color: "#fff", border: "none", padding: "10px 24px", borderRadius: 8, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: 14 }}>
+                  Browse Catalog
+                </button>
+              </div>
+            )}
+
+            {user && activeReservations.length > 0 && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {activeReservations.map(res => {
+                  const book = books.find(b => b.id === res.bookId);
+                  return (
+                    <div key={res.id} style={{ background: "#fff", border: "1px solid #e8e4dc", borderRadius: 12, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, animation: "fadeIn 0.3s ease" }}>
+                      <div style={{ width: 48, height: 64, borderRadius: 6, overflow: "hidden", background: "#f5f1eb", flexShrink: 0 }}>
+                        {book && <img src={book.cover} alt={book.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />}
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <p style={{ margin: "0 0 3px", fontFamily: "'DM Serif Display', serif", fontSize: 16, color: "#1a1410" }}>{res.bookTitle}</p>
+                        <p style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: "#999" }}>Reserved on {res.date}</p>
+                      </div>
+                      <button onClick={() => handleUndo(res.id)} style={{
+                        background: "none", border: "1.5px solid #ba7517", color: "#ba7517",
+                        padding: "7px 16px", borderRadius: 8, cursor: "pointer",
+                        fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: 13
+                      }}>Cancel</button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Past reservations */}
+            {user && reservations.filter(r => !r.active).length > 0 && (
+              <div style={{ marginTop: 36 }}>
+                <h2 style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, fontWeight: 600, color: "#999", marginBottom: 12 }}>Past reservations</h2>
+                {reservations.filter(r => !r.active).map(res => (
+                  <div key={res.id} style={{ background: "#faf8f4", border: "1px solid #ede9e1", borderRadius: 10, padding: "12px 16px", marginBottom: 8, display: "flex", alignItems: "center", gap: 12, opacity: 0.65 }}>
+                    <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 14, color: "#555" }}>{res.bookTitle}</span>
+                    <span style={{ marginLeft: "auto", fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: "#aaa" }}>Cancelled · {res.date}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+      </main>
+
+      {/* REGISTRATION MODAL */}
+      {showRegModal && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(20,12,4,0.55)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s ease" }}>
+          <div style={{ background: "#fff", borderRadius: 16, padding: "32px 36px", width: "100%", maxWidth: 400, boxShadow: "0 20px 60px rgba(0,0,0,0.2)" }}>
+            <h2 style={{ margin: "0 0 6px", fontFamily: "'DM Serif Display', serif", fontSize: 26, color: "#1a1410" }}>Access the Library</h2>
+            <p style={{ margin: "0 0 24px", fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: "#888" }}>Register with your email to start reserving books.</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              {!isLoginMode && (
+                <input type="text" placeholder="Full name" value={name} onChange={e => setName(e.target.value)} style={{ padding: "10px 14px", borderRadius: 8, border: "1px solid #ddd", fontSize: 14, fontFamily: "'DM Sans', sans-serif" }} />
+              )}
+              <input type="email" placeholder="Email address" value={email} onChange={e => setEmail(e.target.value)} style={{ padding: "10px 14px", borderRadius: 8, border: "1px solid #ddd", fontSize: 14, fontFamily: "'DM Sans', sans-serif" }} />
+              <button onClick={handleRegister} style={{ background: "#2d1f0e", color: "#fff", border: "none", padding: "11px 0", borderRadius: 8, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: 15, marginTop: 4 }}>
+                {isLoginMode ? 'Log In' : 'Register & Continue'}
+              </button>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <button onClick={() => setShowRegModal(false)} style={{ background: "none", border: "none", color: "#aaa", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", fontSize: 13 }}>
+                  Cancel
+                </button>
+                <button onClick={() => { setIsLoginMode(!isLoginMode); }} style={{ background: 'none', border: 'none', color: '#2d1f0e', cursor: 'pointer', fontFamily: "'DM Sans', sans-serif", fontSize: 13 }}>
+                  {isLoginMode ? 'Need an account? Register' : 'Already registered? Log in'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TOAST */}
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+    </>
+  );
+}
