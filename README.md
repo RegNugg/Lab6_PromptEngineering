@@ -66,7 +66,7 @@ Serving HTTP on 0.0.0.0 port 5500 (http://0.0.0.0:5500/) ...
 
 5.
 
-It just shows a blank page with nothing on it
+It just shows a blank page with nothing on it. (Result: dev_test_fixed.html)
 
 6.
 
