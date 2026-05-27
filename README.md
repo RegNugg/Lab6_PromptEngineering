@@ -4,6 +4,7 @@ GitHub link: https://github.com/RegNugg/Lab6_PromptEngineering
 
 Prompts used:
 ---------------------------CLAUDE CODE---------------------------
+
 1.
 
 Choose one of the 4 specifications given to develop an applications with visual studio code with GitHub copilot activated. 
@@ -29,6 +30,7 @@ This activity is done and submitted in teams. The time needed to resolve is expe
 (Also gave the file UserStories_Reserves_de_Biblioteca-ENG.pdf)
 
 --------------------------GITHUB COPILOT--------------------------
+
 2.
 
 Please read these files and check the app structure, we need the ability to log in and the ability to log out, taking into account that we want data persistence, meaning once you register that info is saved for future log ins. (added the initial Claude README and the initial LibraryReservations.jsx)
