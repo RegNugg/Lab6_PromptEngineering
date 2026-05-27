@@ -39,9 +39,18 @@ Response:
 
 <img width="1209" height="436" alt="imatge" src="https://github.com/user-attachments/assets/fc6c2048-8b1c-4004-84aa-04665545b6cf" />
 
-<img width="1091" height="631" alt="imatge" src="https://github.com/user-attachments/assets/58fc4d80-1f45-4c0f-9ea0-8d3d6b435816" />
 
 3.
+
+Can we check if it works?
+
+Response:
+
+<img width="1180" height="569" alt="imatge" src="https://github.com/user-attachments/assets/3a273c3e-b37c-45e4-931a-caf89ce3b58f" />
+
+<img width="873" height="218" alt="imatge" src="https://github.com/user-attachments/assets/91604d2b-0d46-48c5-92f6-a520e6e694b0" />
+
+4.
 
 This is the terminal, I got this error:
 didac@DESKTOP-PCEPB40:/mnt/e/Universitat/SoftEng/Lab6_PromptEngineering$ python -m http.server 5500
@@ -54,7 +63,12 @@ Serving HTTP on 0.0.0.0 port 5500 (http://0.0.0.0:5500/) ...
 127.0.0.1 - - [27/May/2026 15:43:10] code 404, message File not found
 127.0.0.1 - - [27/May/2026 15:43:10] "GET /favicon.ico HTTP/1.1" 404 -
 
-4.
+Response:
+
+<img width="1261" height="443" alt="imatge" src="https://github.com/user-attachments/assets/e2ce89c0-62e8-45e7-b30b-3ef8c0a04d5e" />
+
+
+5.
 
 This is the terminal, I got this error:
 didac@DESKTOP-PCEPB40:/mnt/e/Universitat/SoftEng/Lab6_PromptEngineering$ ls -la
@@ -72,14 +86,47 @@ Serving HTTP on 0.0.0.0 port 5500 (http://0.0.0.0:5500/) ...
 127.0.0.1 - - [27/May/2026 15:44:12] "GET /favicon.ico HTTP/1.1" 404 -
 127.0.0.1 - - [27/May/2026 15:44:32] "GET /dev_test.html HTTP/1.1" 304 -
 
-5.
+Response:
 
-It just shows a blank page with nothing on it. (Result: dev_test.html)
+<img width="1121" height="486" alt="imatge" src="https://github.com/user-attachments/assets/293c367b-cd07-4581-b04f-7c8d6ab20b7b" />
+
 
 6.
 
-Now what's the next move?
+It just shows a blank page with nothing on it. (Result: dev_test.html)
+
+Response:
+
+<img width="1000" height="407" alt="imatge" src="https://github.com/user-attachments/assets/618b00aa-e3b3-4664-8964-90a0cf90ea7c" />
+
 
 7.
 
+Now what's the next move?
+
+Response:
+
+<img width="1164" height="507" alt="imatge" src="https://github.com/user-attachments/assets/36870fe7-172c-4d0b-b0f8-0a5a10dccc3e" />
+
+<img width="1153" height="348" alt="imatge" src="https://github.com/user-attachments/assets/b0f197a3-ce83-497a-9ce5-a997b39903b0" />
+
+
+8.
+
 Ok so reloading the page logs me out and whenever i log in again the reservation isn't there anymore, we only need to fix those 2 issues (Result: dev_test_fixed.html).
+
+Response:
+
+<img width="1254" height="644" alt="imatge" src="https://github.com/user-attachments/assets/8d403231-38ed-4b56-8b2c-8047b339a352" />
+
+<img width="1185" height="523" alt="imatge" src="https://github.com/user-attachments/assets/3cab9a38-d603-4cb1-8b60-a5b8b7755273" />
+
+<img width="1197" height="574" alt="imatge" src="https://github.com/user-attachments/assets/07058492-a4e6-4c57-a2d3-299b2bf1da79" />
+
+
+
+Learned:
+
+- Defining context and boundaries is the most important part about working with AI's . It is important to determine what the AI can and cannot edit, delete or add. Also giving the initial layout of folders and files (and their contents preferably) so the AI can understand where and how to act.
+- Especifying the task is also very important, i.e. giving steps and specific subtasks, unless we want to give the AI absolute freedom.
+- AI won't do everything right and could leave duplicated and unpolished code, so reviewing will be useful, even if it's sharing the code with another AI.
