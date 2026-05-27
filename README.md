@@ -1,4 +1,4 @@
-<img width="1091" height="631" alt="imatge" src="https://github.com/user-attachments/assets/58fc4d80-1f45-4c0f-9ea0-8d3d6b435816" />Lab6_PromptEngineering
+Lab6_PromptEngineering
 
 GitHub link: https://github.com/RegNugg/Lab6_PromptEngineering
 
@@ -38,6 +38,8 @@ Response:
 <img width="1091" height="631" alt="imatge" src="https://github.com/user-attachments/assets/d8d97943-4af3-4c36-a416-0746109066bf" />
 
 <img width="1209" height="436" alt="imatge" src="https://github.com/user-attachments/assets/fc6c2048-8b1c-4004-84aa-04665545b6cf" />
+
+<img width="1091" height="631" alt="imatge" src="https://github.com/user-attachments/assets/58fc4d80-1f45-4c0f-9ea0-8d3d6b435816" />
 
 3.
 
