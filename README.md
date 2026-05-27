@@ -1,4 +1,4 @@
-Lab6_PromptEngineering
+<img width="1091" height="631" alt="imatge" src="https://github.com/user-attachments/assets/58fc4d80-1f45-4c0f-9ea0-8d3d6b435816" />Lab6_PromptEngineering
 
 GitHub link: https://github.com/RegNugg/Lab6_PromptEngineering
 
@@ -34,58 +34,10 @@ This activity is done and submitted in teams. The time needed to resolve is expe
 Please read these files and check the app structure, we need the ability to log in and the ability to log out, taking into account that we want data persistence, meaning once you register that info is saved for future log ins. (added the initial Claude README and the initial LibraryReservations.jsx)
 
 Response:
-Optimized tool selectionI'll open the main files to inspect the app structure and identify where to add login/logout persistence.
 
-Read [](file:///e%3A/Universitat/SoftEng/Lab6_PromptEngineering/LibraryReservations.jsx)
+<img width="1091" height="631" alt="imatge" src="https://github.com/user-attachments/assets/d8d97943-4af3-4c36-a416-0746109066bf" />
 
-Now I'll open the README to check project notes.
-
-Read [](file:///e%3A/Universitat/SoftEng/Lab6_PromptEngineering/README.md)
-
-Now I'll patch LibraryReservations.jsx to add localStorage-based persistence, login mode, and a logout action.
-
-Apply Patch
-
-Patching LibraryReservations.jsx to add localStorage persistence, login mode toggle, and a logout button.
-
-Generating patch (82 lines) in [](file:///e%3A/Universitat/SoftEng/Lab6_PromptEngineering/LibraryReservations.jsx)
-
-
-```
-
-```
-I'll re-open LibraryReservations.jsx to verify changes and ensure UI shows logout and login toggle.
-
-Read [](file:///e%3A/Universitat/SoftEng/Lab6_PromptEngineering/LibraryReservations.jsx)
-
-Now I'll update the header user area and the registration modal to show login/register toggle and a logout button.
-
-Generating patch (29 lines) in [](file:///e%3A/Universitat/SoftEng/Lab6_PromptEngineering/LibraryReservations.jsx)
-
-
-```
-
-```
-Applying modal updates to support login mode toggling and adjusted buttons.
-
-Generating patch (31 lines) in [](file:///e%3A/Universitat/SoftEng/Lab6_PromptEngineering/LibraryReservations.jsx)
-
-
-```
-
-```
-Creating a short TODO list describing planned changes and marking implemented steps complete.
-
-Created 5 todos
-
-Done — inspected the app and implemented persistent login/logout.
-
-- **File:** LibraryReservations.jsx — added localStorage persistence (`biblio_users`, `biblio_currentUser`, `biblio_reservations`), a login/register toggle in the modal, and a `Log out` button; loads saved user and reservations on mount and persists changes.
-- **Plan:** created tracked TODOs and marked the implementation steps completed (one verification step remains).
-- **How to test:** run `npm start` and open `http://localhost:3000`, then register, refresh, and verify you remain logged in; use the Log out button to clear session.
-- **Next steps (optional):** add server-side persistence (API), improve auth (passwords / secure storage), or split components into files — which would you like me to do next?
-
-Made changes.
+<img width="1209" height="436" alt="imatge" src="https://github.com/user-attachments/assets/fc6c2048-8b1c-4004-84aa-04665545b6cf" />
 
 3.
 
